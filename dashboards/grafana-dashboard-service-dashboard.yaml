@@ -21,6 +21,7 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
+      "id": 1092297,
       "links": [],
       "panels": [
         {
@@ -37,9 +38,9 @@ data:
           "type": "row"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${Datasource}"
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
           },
           "gridPos": {
             "h": 5,
@@ -57,7 +58,7 @@ data:
             "content": "Number total of customers including those without any assestements.",
             "mode": "markdown"
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "title": "# No of customers",
           "type": "text"
         },
@@ -76,8 +77,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -112,7 +112,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -121,7 +121,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by (service) (assisted_migration_inventory_customers_total{service=\"migration-planner-metrics\"})",
+              "expr": "count(\n  count by (customer) (\n    sum by (customer, source_type) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\"\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: non-numeric, not redhat.com, not empty, not 'example'\n  label_replace(\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n  ) / 3\n))",
               "format": "time_series",
               "instant": true,
               "legendFormat": "{{service}}",
@@ -137,43 +137,50 @@ data:
             "type": "prometheus",
             "uid": "${Datasource}"
           },
-          "gridPos": {
-            "h": 5,
-            "w": 5,
-            "x": 8,
-            "y": 1
-          },
-          "id": 19,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "Number total of assessments including the assessments without any inventory.",
-            "mode": "markdown"
-          },
-          "pluginVersion": "10.4.1",
-          "title": "# No of assessments",
-          "type": "text"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${Datasource}"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "thresholds"
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -185,30 +192,26 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 5,
-            "w": 3,
-            "x": 13,
+            "h": 10,
+            "w": 14,
+            "x": 8,
             "y": 1
           },
-          "id": 20,
+          "id": 26,
           "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "percentChangeColorMode": "standard",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
             },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -216,22 +219,20 @@ data:
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "exemplar": false,
-              "expr": "max by (service) (assisted_migration_inventory_assessments_total{service=\"migration-planner-metrics\"})",
+              "expr": "max(assisted_migration_visits_count_per_week{namespace=\"assisted-migration-stage\"})",
               "format": "time_series",
-              "instant": true,
-              "legendFormat": "{{service}}",
-              "range": false,
+              "legendFormat": "Visits",
+              "range": true,
               "refId": "A"
             }
           ],
-          "title": "No of assessments",
-          "type": "stat"
+          "title": "Unique visitors per week",
+          "type": "timeseries"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${Datasource}"
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
           },
           "gridPos": {
             "h": 5,
@@ -249,7 +250,7 @@ data:
             "content": "Total number of vm of all customers.",
             "mode": "markdown"
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "title": "# No of vms",
           "type": "text"
         },
@@ -258,6 +259,7 @@ data:
             "type": "prometheus",
             "uid": "${Datasource}"
           },
+          "description": "",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -268,8 +270,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -300,7 +301,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -318,28 +319,28 @@ data:
           "type": "stat"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${Datasource}"
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
           },
           "gridPos": {
             "h": 5,
             "w": 5,
-            "x": 8,
-            "y": 6
+            "x": 0,
+            "y": 11
           },
-          "id": 21,
+          "id": 19,
           "options": {
             "code": {
               "language": "plaintext",
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "Number of incomplete assessments means that the assessment does not have an inventory.",
+            "content": "Number total of assessments including the assessments without any inventory.",
             "mode": "markdown"
           },
-          "pluginVersion": "10.4.1",
-          "title": "# No of incomplete assessments",
+          "pluginVersion": "11.6.3",
+          "title": "# No of assessments",
           "type": "text"
         },
         {
@@ -357,8 +358,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -372,10 +372,10 @@ data:
           "gridPos": {
             "h": 5,
             "w": 3,
-            "x": 13,
-            "y": 6
+            "x": 5,
+            "y": 11
           },
-          "id": 22,
+          "id": 20,
           "options": {
             "colorMode": "value",
             "graphMode": "none",
@@ -393,7 +393,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -402,7 +402,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by (service) (assisted_migration_inventory_assessments_total{service=\"migration-planner-metrics\"}) - max by (service) (assisted_migration_inventory_inventories_total)",
+              "expr": "sum by (service) (assisted_migration_inventory_total_assessments_by_customer_by_source_type{service=\"migration-planner-metrics\"}) / 3",
               "format": "time_series",
               "instant": true,
               "legendFormat": "{{service}}",
@@ -410,7 +410,7 @@ data:
               "refId": "A"
             }
           ],
-          "title": "No of incomplete assessments",
+          "title": "No of assessments",
           "type": "stat"
         },
         {
@@ -418,11 +418,119 @@ data:
             "type": "prometheus",
             "uid": "${Datasource}"
           },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto",
+                  "wrapText": false
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 14,
+            "x": 8,
+            "y": 11
+          },
+          "id": 27,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": true
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "customer"
+              }
+            ]
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by (customer, source_type) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3\n",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "{{customer}} - {{source_type}}",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "Total number of assessments per organization & source type",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "byVariable": false,
+                "include": {
+                  "names": [
+                    "customer",
+                    "source_type",
+                    "Value"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "Value": "Number of assessments",
+                  "customer": "Customer",
+                  "source_type": "Source type"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 5,
             "w": 5,
             "x": 0,
-            "y": 11
+            "y": 16
           },
           "id": 17,
           "options": {
@@ -434,7 +542,7 @@ data:
             "content": "Number of distinct operating systems.",
             "mode": "markdown"
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "title": "# No of Operating System",
           "type": "text"
         },
@@ -453,8 +561,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -469,7 +576,7 @@ data:
             "h": 5,
             "w": 3,
             "x": 5,
-            "y": 11
+            "y": 16
           },
           "id": 24,
           "options": {
@@ -489,7 +596,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -507,105 +614,12 @@ data:
           "type": "stat"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${Datasource}"
-          },
-          "gridPos": {
-            "h": 5,
-            "w": 5,
-            "x": 8,
-            "y": 11
-          },
-          "id": 18,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "Total number of discovery reports from all the customers.",
-            "mode": "markdown"
-          },
-          "pluginVersion": "10.4.1",
-          "title": "# No of Discovery Reports",
-          "type": "text"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${Datasource}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 5,
-            "w": 3,
-            "x": 13,
-            "y": 11
-          },
-          "id": 6,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "percentChangeColorMode": "standard",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
-          },
-          "pluginVersion": "10.4.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${Datasource}"
-              },
-              "editorMode": "code",
-              "expr": "max by (service) (assisted_migration_inventory_inventories_total)",
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "No of Discovery reports",
-          "type": "stat"
-        },
-        {
           "collapsed": false,
           "gridPos": {
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 21
           },
           "id": 25,
           "panels": [],
@@ -637,7 +651,7 @@ data:
             "h": 11,
             "w": 8,
             "x": 0,
-            "y": 17
+            "y": 22
           },
           "id": 2,
           "options": {
@@ -660,7 +674,7 @@ data:
               "sort": "none"
             }
           },
-          "pluginVersion": "11.5.2",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -704,7 +718,7 @@ data:
             "h": 11,
             "w": 7,
             "x": 8,
-            "y": 17
+            "y": 22
           },
           "id": 12,
           "options": {
@@ -728,7 +742,7 @@ data:
               "sort": "none"
             }
           },
-          "pluginVersion": "11.5.2",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -736,13 +750,13 @@ data:
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "topk(5, (max by (org_id) (assisted_migration_inventory_vms_by_customer_total{service=\"migration-planner-metrics\"})))",
+              "expr": "topk(6, sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n)\n\n",
               "legendFormat": "{{org_id}}",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Top 5 customers by number of VMs",
+          "title": "Top customers by number of VMs",
           "type": "piechart"
         },
         {
@@ -771,7 +785,7 @@ data:
             "h": 11,
             "w": 7,
             "x": 15,
-            "y": 17
+            "y": 22
           },
           "id": 13,
           "options": {
@@ -794,7 +808,7 @@ data:
               "sort": "none"
             }
           },
-          "pluginVersion": "11.5.2",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -802,13 +816,13 @@ data:
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "topk(5, sum by (org_id) (assisted_migration_inventory_storage_by_customer_total))",
+              "expr": "topk(5, sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n)\n\n",
               "legendFormat": "{{org_id}}",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Top 5 customers by total storage",
+          "title": "Top customers by total storage",
           "type": "piechart"
         },
         {
@@ -817,7 +831,7 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 33
           },
           "id": 7,
           "panels": [],
@@ -840,8 +854,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -856,7 +869,7 @@ data:
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 29
+            "y": 34
           },
           "id": 9,
           "options": {
@@ -876,7 +889,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -910,6 +923,7 @@ data:
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 4,
                 "gradientMode": "none",
@@ -941,8 +955,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -957,7 +970,7 @@ data:
             "h": 8,
             "w": 20,
             "x": 4,
-            "y": 29
+            "y": 34
           },
           "id": 10,
           "options": {
@@ -968,11 +981,12 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -1020,7 +1034,7 @@ data:
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 33
+            "y": 38
           },
           "id": 8,
           "options": {
@@ -1040,7 +1054,7 @@ data:
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -1063,7 +1077,7 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 37
+            "y": 42
           },
           "id": 11,
           "panels": [],
@@ -1121,7 +1135,7 @@ data:
             "h": 11,
             "w": 12,
             "x": 0,
-            "y": 38
+            "y": 43
           },
           "id": 1,
           "options": {
@@ -1146,7 +1160,7 @@ data:
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
-          "pluginVersion": "11.5.2",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -1202,7 +1216,7 @@ data:
             "h": 11,
             "w": 12,
             "x": 12,
-            "y": 38
+            "y": 43
           },
           "id": 3,
           "options": {
@@ -1217,7 +1231,7 @@ data:
             },
             "showHeader": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -1226,7 +1240,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by (service,org_id) (assisted_migration_inventory_vms_by_customer_total{namespace=\"assisted-migration-stage\"})",
+              "expr": "sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      namespace=\"assisted-migration-stage\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      namespace=\"assisted-migration-stage\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n\n\n\n",
               "format": "table",
               "instant": true,
               "legendFormat": "{{org_id}}",
@@ -1309,7 +1323,7 @@ data:
             "h": 11,
             "w": 12,
             "x": 0,
-            "y": 49
+            "y": 54
           },
           "id": 14,
           "options": {
@@ -1324,7 +1338,7 @@ data:
             },
             "showHeader": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.6.3",
           "targets": [
             {
               "datasource": {
@@ -1333,7 +1347,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by (org_id,type) (assisted_migration_inventory_storage_by_customer_total{service=\"migration-planner-metrics\"})",
+              "expr": "max by (customer,type) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n)\n\n\n",
               "format": "table",
               "instant": true,
               "legendFormat": "{{org_id}}",
@@ -1368,34 +1382,29 @@ data:
           "type": "table"
         }
       ],
+      "preload": false,
       "refresh": "",
-      "schemaVersion": 39,
+      "schemaVersion": 41,
       "tags": [],
       "templating": {
         "list": [
           {
             "current": {
-              "selected": false,
               "text": "crcs02ue1-prometheus",
               "value": "PDD8BE47D10408F45"
             },
-            "hide": 0,
             "includeAll": false,
             "label": "Datasource",
-            "multi": false,
             "name": "Datasource",
             "options": [],
             "query": "prometheus",
-            "queryValue": "",
             "refresh": 1,
             "regex": "crcs02ue1-prometheus|crcp01ue1-prometheus",
-            "skipUrlSync": false,
             "type": "datasource"
           },
           {
             "allValue": "All",
             "current": {
-              "selected": false,
               "text": "All",
               "value": "$__all"
             },
@@ -1404,10 +1413,8 @@ data:
               "uid": "${Datasource}"
             },
             "definition": "label_values(assisted_migration_inventory_customers_total,pod)",
-            "hide": 0,
             "includeAll": true,
             "label": "Pod",
-            "multi": false,
             "name": "pod",
             "options": [],
             "query": {
@@ -1417,22 +1424,29 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
-            "sort": 0,
             "type": "query"
+          },
+          {
+            "baseFilters": [],
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${Datasource}"
+            },
+            "filters": [],
+            "name": "Filters",
+            "type": "adhoc"
           }
         ]
       },
       "time": {
-        "from": "now-2d",
+        "from": "now-7d",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "browser",
       "title": "Service Dashboards",
       "uid": "deg3jpmyvl7gga",
-      "version": 4,
-      "weekStart": ""
+      "version": 1
     }
 kind: ConfigMap
 metadata:
