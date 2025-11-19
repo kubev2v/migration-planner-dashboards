@@ -219,7 +219,7 @@ data:
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "max(assisted_migration_visits_count_per_week{namespace=\"assisted-migration-stage\"})",
+              "expr": "max(assisted_migration_visits_count_per_week)",
               "format": "time_series",
               "legendFormat": "Visits",
               "range": true,
@@ -1240,7 +1240,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      namespace=\"assisted-migration-stage\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      namespace=\"assisted-migration-stage\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n\n\n\n",
+              "expr": "sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n\n\n\n",
               "format": "table",
               "instant": true,
               "legendFormat": "{{org_id}}",
