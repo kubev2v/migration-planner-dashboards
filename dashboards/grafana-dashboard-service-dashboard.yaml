@@ -21,7 +21,7 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 1092297,
+      "id": 1001953,
       "links": [],
       "panels": [
         {
@@ -482,7 +482,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by (customer, source_type) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3\n",
+              "expr": "sum by (org_id, source_type) (\n    assisted_migration_inventory_total_assessments_by_customer_by_source_type{\n      service=\"migration-planner-metrics\",\n      org_id!~\"example.com|^$\"\n    }\n) / 3 > 0",
               "format": "table",
               "instant": true,
               "legendFormat": "{{customer}} - {{source_type}}",
@@ -498,9 +498,9 @@ data:
                 "byVariable": false,
                 "include": {
                   "names": [
-                    "customer",
                     "source_type",
-                    "Value"
+                    "Value",
+                    "org_id"
                   ]
                 }
               }
@@ -750,7 +750,7 @@ data:
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "topk(6, sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_vms_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n)\n\n",
+              "expr": "topk(6, sum by (org_id) (\n    assisted_migration_inventory_vms_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"example.com|^$|example\"\n    }\n) / 3 \n)\n\n",
               "legendFormat": "{{org_id}}",
               "range": true,
               "refId": "A"
@@ -816,7 +816,7 @@ data:
                 "uid": "${Datasource}"
               },
               "editorMode": "code",
-              "expr": "topk(5, sum by (customer) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n) / 3 \n)\n\n",
+              "expr": "topk(5, sum by (org_id) (\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"example.com|^$|example\",\n    }\n) / 3 \n)\n\n",
               "legendFormat": "{{org_id}}",
               "range": true,
               "refId": "A"
@@ -1347,7 +1347,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "max by (customer,type) (\n  # Group A: org_id is numeric OR \"redhat.com\"\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id=~\"^[0-9]+$|^redhat.com$\",\n    },\n    \"customer\",\n    \"redhat.com\",\n    \"org_id\",\n    \".*\"\n  )\n  OR\n  # Group B: everything else (non-numeric, not redhat.com, not empty, not 'example')\n  label_replace(\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"^[0-9]+$|^redhat.com$|^$|^example$\"\n    },\n    \"customer\",\n    \"$1\",\n    \"org_id\",\n    \"^(.*)$\"\n  )\n)\n\n\n",
+              "expr": "max by (org_id, type) (\n    assisted_migration_inventory_storage_by_customer_total{\n      service=\"migration-planner-metrics\",\n      org_id!~\"example.com|^$|example\",\n    }\n)\n\n\n",
               "format": "table",
               "instant": true,
               "legendFormat": "{{org_id}}",
@@ -1439,14 +1439,14 @@ data:
         ]
       },
       "time": {
-        "from": "now-7d",
+        "from": "now-6h",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "browser",
       "title": "Service Dashboards",
       "uid": "deg3jpmyvl7gga",
-      "version": 1
+      "version": 8
     }
 kind: ConfigMap
 metadata:
