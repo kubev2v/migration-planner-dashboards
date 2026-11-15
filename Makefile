@@ -1,6 +1,7 @@
 AM_DASHBOARDS ?= $(PWD)/am.json
 SD_DASHBOARDS ?= $(PWD)/sd.json
 SLO_DASHBOARDS ?= $(PWD)/slo.json
+MES_DASHBOARDS ?= $(PWD)/mes.json
 
 am: UPDATED_DASHBOARD=updated-dashboard
 am: DASHBOARD=grafana-dashboard-assisted-migrations
@@ -22,3 +23,11 @@ slo:
 	@oc create configmap grafana-dashboard-slo --from-file=$(SLO_DASHBOARDS) -o yaml --dry-run=client > $(PWD)/dashboards/$(UPDATED_DASHBOARD).yaml
 	@tail -n 4 $(PWD)/dashboards/$(DASHBOARD).yaml >> $(PWD)/dashboards/$(UPDATED_DASHBOARD).yaml
 	@mv $(PWD)/dashboards/$(UPDATED_DASHBOARD).yaml $(PWD)/dashboards/$(DASHBOARD).yaml
+
+.PHONY: mes
+mes: UPDATED_DASHBOARD=updated-migration-event-streamer-dashboard
+mes: DASHBOARD=grafana-dashboard-migration-event-streamer
+mes:
+	@oc create configmap grafana-dashboard-migration-event-streamer --from-file="mes.json=$(MES_DASHBOARDS)" -o yaml --dry-run=client > "$(PWD)/dashboards/$(UPDATED_DASHBOARD).yaml"
+	@tail -n 4 "$(PWD)/dashboards/$(DASHBOARD).yaml" >> "$(PWD)/dashboards/$(UPDATED_DASHBOARD).yaml"
+	@mv "$(PWD)/dashboards/$(UPDATED_DASHBOARD).yaml" "$(PWD)/dashboards/$(DASHBOARD).yaml"
