@@ -1,0 +1,1685 @@
+apiVersion: v1
+data:
+  mes.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "panels": [],
+          "title": "Event streamer overview",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "percentunit",
+              "min": 0,
+              "noValue": "No data",
+              "decimals": 1,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 0,
+            "y": 1
+          },
+          "id": 2,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(up{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}) / count(up{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"})",
+              "format": "time_series",
+              "instant": true,
+              "range": false,
+              "legendFormat": "Available",
+              "refId": "A"
+            }
+          ],
+          "title": "Scrape availability",
+          "type": "stat",
+          "description": "Fraction of selected streamer scrape targets currently up. This checks the metrics endpoint, not Kafka or Elasticsearch readiness. No data means no matching scrape targets."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short",
+              "min": 0,
+              "noValue": "No data",
+              "decimals": 0
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 4,
+            "y": 1
+          },
+          "id": 3,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum (increase(streamer_events_received_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__range]))",
+              "format": "time_series",
+              "instant": true,
+              "range": false,
+              "legendFormat": "Received",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline events received (selected range)",
+          "type": "stat",
+          "description": "Logical events accepted by pipelines during the selected range. Router and dispatcher activity is excluded to avoid counting one event at multiple stages. Counter increases require at least two scrapes."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short",
+              "min": 0,
+              "noValue": "No data",
+              "decimals": 0
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 8,
+            "y": 1
+          },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "(sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\",outcome=\"success\"}[$__range]))) or (0 * sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__range])))",
+              "format": "time_series",
+              "instant": true,
+              "range": false,
+              "legendFormat": "Successes",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline successes (selected range)",
+          "type": "stat",
+          "description": "Pipeline events reported successful after processing and the destination writer returned. Zero is shown only when completed-event telemetry exists. These are event counts, not current customer or VM totals."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "short",
+              "min": 0,
+              "noValue": "No data",
+              "decimals": 0
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 12,
+            "y": 1
+          },
+          "id": 5,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "(sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\",outcome=~\"failed|invalid\"}[$__range]))) or (0 * sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__range])))",
+              "format": "time_series",
+              "instant": true,
+              "range": false,
+              "legendFormat": "Failed / invalid",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline failures / invalid (selected range)",
+          "type": "stat",
+          "description": "Final failed or invalid pipeline outcomes in the selected range, after any retries. Canceled events are shown separately in outcome charts. Zero is shown only when completed-event telemetry exists."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "percentunit",
+              "min": 0,
+              "noValue": "No data",
+              "decimals": 2,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 16,
+            "y": 1
+          },
+          "id": 6,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "((sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\",outcome=\"success\"}[$__range]))) or (0 * sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__range])))) / ((sum (increase(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__range]))) > 0)",
+              "format": "time_series",
+              "instant": true,
+              "range": false,
+              "legendFormat": "Success rate",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline success rate (selected range)",
+          "type": "stat",
+          "description": "Successful pipeline completions divided by all pipeline completions, including failed, invalid, and canceled outcomes. No data is shown when no events completed; an absent success counter is zero only when other completion counters exist."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short",
+              "min": 0,
+              "noValue": "No data",
+              "decimals": 0
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 20,
+            "y": 1
+          },
+          "id": 7,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(streamer_events_in_flight{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"})",
+              "format": "time_series",
+              "instant": true,
+              "range": false,
+              "legendFormat": "In flight",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline events in flight",
+          "type": "stat",
+          "description": "Events currently being processed in pipelines, including retry delays and error handling. This is not Kafka lag or a queued-event count."
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 8,
+          "panels": [],
+          "title": "Pipeline processing",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (event_type) (rate(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{event_type}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline completions by event type",
+          "type": "timeseries",
+          "description": "Rate of logical pipeline completions by event type, across all outcomes. Retries do not count as extra events. Values are summed across the selected pods."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (outcome) (rate(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{outcome}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline outcomes",
+          "type": "timeseries",
+          "description": "Rate of pipeline completions by final outcome: success, failed, invalid, or canceled. Dispatcher handoffs are excluded."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Seconds",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "s",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 14
+          },
+          "id": 11,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.5, sum by (le) (rate(streamer_event_processing_duration_seconds_bucket{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__rate_interval])))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "p50",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.95, sum by (le) (rate(streamer_event_processing_duration_seconds_bucket{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__rate_interval])))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "p95",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.99, sum by (le) (rate(streamer_event_processing_duration_seconds_bucket{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__rate_interval])))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "p99",
+              "refId": "C"
+            }
+          ],
+          "title": "Pipeline processing latency",
+          "type": "timeseries",
+          "description": "p50, p95, and p99 of pipeline work across all outcomes and event types. Includes decoding, processing, destination writes, retries, retry delays, and error handling. This is not end-to-end Kafka-to-Elasticsearch latency."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 14
+          },
+          "id": 12,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (event_type) (rate(streamer_retries_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",stage=\"pipeline\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{event_type}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Pipeline retries by event type",
+          "type": "timeseries",
+          "description": "Additional processing attempts actually started after an initial failure, per second. This is an attempt count, not a count of distinct failed events. A series is created only after the first retry."
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 22
+          },
+          "id": 13,
+          "panels": [],
+          "title": "Router, dispatcher, and pipeline stages",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 23
+          },
+          "id": 14,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (stage) (rate(streamer_events_received_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{stage}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Events received by stage",
+          "type": "timeseries",
+          "description": "Events accepted per second at each stage. One logical event can appear at router, dispatcher, and pipeline; do not add stage rates together. Invalid outer envelopes count at their consumer stage."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 23
+          },
+          "id": 15,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (stage) (streamer_events_in_flight{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"})",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{stage}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Events in flight by stage",
+          "type": "timeseries",
+          "description": "Current stage work. Dispatcher accounting ends at pipeline handoff; the pipeline gauge covers actual processing. Router and pipeline gauges include their work and failure handling. These gauges do not measure Kafka backlog."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 31
+          },
+          "id": 16,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (stage, outcome) (rate(streamer_events_completed_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\",outcome!=\"success\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{stage}} / {{outcome}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Non-success outcomes by stage",
+          "type": "timeseries",
+          "description": "Final failed, invalid, unsupported, and canceled outcomes per second by stage. Unsupported event types and malformed outer envelopes are visible at router/dispatcher even when no pipeline runs."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Seconds",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "s",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 31
+          },
+          "id": 17,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.95, sum by (le, stage) (rate(streamer_event_processing_duration_seconds_bucket{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}[$__rate_interval])))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{stage}}",
+              "refId": "A"
+            }
+          ],
+          "title": "p95 work duration by stage",
+          "type": "timeseries",
+          "description": "p95 stage work duration. Router measures routing to Kafka; dispatcher measures handoff only; pipeline measures actual processing, destination writes, retries, and error handling. Stage durations are not interchangeable or additive percentiles."
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 39
+          },
+          "id": 18,
+          "panels": [],
+          "title": "Kafka consumers",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Events / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 40
+          },
+          "id": 19,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (consumer) (rate(kafka_consumer_fetch_records_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{consumer}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Kafka records fetched by consumer",
+          "type": "timeseries",
+          "description": "Kafka client records fetched per second by router or dispatcher consumer. Fetched records can be buffered and are not evidence of successful processing or Elasticsearch writes. This is not consumer group lag."
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Errors / second",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 8,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ops",
+              "min": 0,
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 40
+          },
+          "id": 20,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.6.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (consumer) (rate(kafka_consumer_connect_errors_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{consumer}} / connect",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (consumer) (rate(kafka_consumer_read_errors_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{consumer}} / read",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (consumer) (rate(kafka_consumer_write_errors_total{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\",pod=~\"${pod:regex}\"}[$__rate_interval]))",
+              "format": "time_series",
+              "instant": false,
+              "range": true,
+              "legendFormat": "{{consumer}} / write",
+              "refId": "C"
+            }
+          ],
+          "title": "Kafka consumer transport errors",
+          "type": "timeseries",
+          "description": "Kafka client connection, read, and write errors per second by consumer. These transport counters do not measure all Kafka protocol errors, event-processing failures, or Elasticsearch errors. Series may be absent until first use."
+        }
+      ],
+      "preload": false,
+      "refresh": "30s",
+      "schemaVersion": 41,
+      "tags": [
+        "migration-event-streamer"
+      ],
+      "templating": {
+        "list": [
+          {
+            "current": {
+              "text": "crcs02ue1-prometheus",
+              "value": "PDD8BE47D10408F45"
+            },
+            "includeAll": false,
+            "label": "Datasource",
+            "name": "Datasource",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "regex": "crcs02ue1-prometheus|crcp01ue1-prometheus",
+            "type": "datasource"
+          },
+          {
+            "current": {
+              "text": "assisted-migration-stage",
+              "value": "assisted-migration-stage"
+            },
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${Datasource}"
+            },
+            "definition": "label_values(up{service=\"migration-event-streamer-metrics\"}, namespace)",
+            "includeAll": false,
+            "label": "Namespace",
+            "name": "namespace",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(up{service=\"migration-event-streamer-metrics\"}, namespace)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "sort": 1,
+            "type": "query",
+            "multi": false
+          },
+          {
+            "current": {
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${Datasource}"
+            },
+            "definition": "label_values(up{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\"}, pod)",
+            "includeAll": true,
+            "label": "Pod",
+            "name": "pod",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(up{namespace=\"$namespace\",service=\"migration-event-streamer-metrics\"}, pod)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "sort": 1,
+            "type": "query",
+            "multi": true,
+            "allValue": ".*"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Migration Event Streamer",
+      "uid": "migration-event-streamer",
+      "version": 1,
+      "description": "Operational metrics for migration-event-streamer. Business and inventory analytics are stored in Elasticsearch. Pipeline totals count logical events once; stage panels separate routing, handoff, and processing."
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: grafana-dashboard-migration-event-streamer
+  labels:
+    grafana_dashboard: "true"
+  annotations:
+    grafana-folder: /grafana-dashboard-definitions/assisted-migrations
